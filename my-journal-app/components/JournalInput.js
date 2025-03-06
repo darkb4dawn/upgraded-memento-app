@@ -9,7 +9,7 @@ function JournalInput(props) {
   }
 
   function addJournalHandler() {
-    props.onAddJournal(enteredJournalText); // Fix: Use onAddJournal
+    props.onAddJournal(enteredJournalText); 
     setEnteredJournalText("");
   }
 

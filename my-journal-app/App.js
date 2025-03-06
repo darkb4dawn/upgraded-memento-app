@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5F5DC", // Light beige for a paper-like feel
+    backgroundColor: "#F5F5DC", 
   },
   title: {
     fontSize: 24,
@@ -111,7 +111,7 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingTop: 50,
     paddingHorizontal: 16,
-    backgroundColor: "#FAF3E0", // Off-white paper color
+    backgroundColor: "#FAF3E0", 
   },
   backButtonContainer: {
     marginBottom: 10,
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
     padding: 15,
     marginVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#B0A999", // Subtle gray-brown for notebook lines
+    borderBottomColor: "#B0A999", 
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowOffset: { width: 0, height: 1 },
@@ -168,7 +168,7 @@ const styles = StyleSheet.create({
     color: "#ffffff",
   },
   logo: {
-    width: 150,  // Adjust size as needed
+    width: 150,  
     height: 150,
     marginBottom: 20,
     resizeMode: "contain",
