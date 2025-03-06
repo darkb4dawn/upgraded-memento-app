@@ -1,0 +1,20 @@
+﻿.eslintrc.js
+
+
+module.exports = {
+  extends: ['expo', 'prettier'],
+  plugins: ['prettier'],
+  rules: {
+    'prettier/prettier': 'error',
+  },
+};
+
+
+Open User Settings (JSON)
+
+
+"editor.defaultFormatter": "esbenp.prettier-vscode",
+"eslint.run": "onSave",
+"editor.codeActionsOnSave": ["source.fixAll.eslint"],
+"eslint.validate": ["javascript", "javascriptreact", "typescript"],
+"editor.formatOnSave": true,
