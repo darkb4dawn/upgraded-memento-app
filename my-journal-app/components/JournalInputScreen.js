@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   TextInput,
@@ -10,8 +10,15 @@ import {
   ScrollView,
 } from "react-native";
 
-export default function JournalInputScreen({ onSave, onCancel }) {
+export default function JournalInputScreen({ onSave, onCancel, editingEntry }) {
   const [journalText, setJournalText] = useState("");
+
+  
+  useEffect(() => {
+    if (editingEntry) {
+      setJournalText(editingEntry.text); 
+    }
+  }, [editingEntry]);
 
   function handleTextChange(text) {
     setJournalText(text);
@@ -19,7 +26,7 @@ export default function JournalInputScreen({ onSave, onCancel }) {
 
   function saveEntry() {
     if (journalText.trim().length > 0) {
-      onSave(journalText);
+      onSave(journalText); 
       setJournalText("");
     }
   }
@@ -41,8 +48,8 @@ export default function JournalInputScreen({ onSave, onCancel }) {
         />
       </ScrollView>
       <View style={styles.buttonContainer}>
-        <Button title="Save Entry" onPress={saveEntry} color="#606060" />
         <Button title="Cancel" onPress={onCancel} color="#B0B0B0" />
+        <Button title="Save Entry" onPress={saveEntry} color="#606060" />
       </View>
     </KeyboardAvoidingView>
   );
@@ -77,7 +84,7 @@ const styles = StyleSheet.create({
   },
   buttonContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-between", 
     marginTop: 10,
   },
 });

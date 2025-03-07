@@ -10,12 +10,12 @@ import {
   StyleSheet,
 } from "react-native";
 import JournalInputScreen from "./components/JournalInputScreen";
-import JournalItem from "./components/JournalItem";
 
 export default function App() {
   const [appStarted, setAppStarted] = useState(false);
   const [journalEntries, setJournalEntries] = useState([]);
   const [isAddingEntry, setIsAddingEntry] = useState(false);
+  const [editingEntry, setEditingEntry] = useState(null);
 
   function startAppHandler() {
     setAppStarted(true);
@@ -27,17 +27,30 @@ export default function App() {
 
   function startAddJournalHandler() {
     setIsAddingEntry(true);
+    setEditingEntry(null);
   }
 
   function endAddJournalHandler() {
     setIsAddingEntry(false);
+    setEditingEntry(null);
   }
 
   function addJournalHandler(enteredJournalText) {
-    setJournalEntries((currentEntries) => [
-      { text: enteredJournalText, id: Math.random().toString(), date: new Date().toLocaleDateString() },
-      ...currentEntries,
-    ]);
+    if (editingEntry) {
+      setJournalEntries((currentEntries) =>
+        currentEntries.map((entry) =>
+          entry.id === editingEntry.id
+            ? { ...entry, text: enteredJournalText }
+            : entry
+        )
+      );
+      setEditingEntry(null);
+    } else {
+      setJournalEntries((currentEntries) => [
+        { text: enteredJournalText, id: Math.random().toString(), date: new Date().toLocaleDateString() },
+        ...currentEntries,
+      ]);
+    }
     endAddJournalHandler();
   }
 
@@ -45,6 +58,11 @@ export default function App() {
     setJournalEntries((currentEntries) =>
       currentEntries.filter((entry) => entry.id !== id)
     );
+  }
+
+  function startEditJournalHandler(entry) {
+    setEditingEntry(entry);
+    setIsAddingEntry(true);
   }
 
   if (!appStarted) {
@@ -56,11 +74,17 @@ export default function App() {
       </View>
     );
   }
-  
 
   if (isAddingEntry) {
-    return <JournalInputScreen onSave={addJournalHandler} onCancel={endAddJournalHandler} />;
+    return (
+      <JournalInputScreen
+        onSave={addJournalHandler}
+        onCancel={endAddJournalHandler}
+        editingEntry={editingEntry} // Pass the editingEntry prop
+      />
+    );
   }
+  
 
   return (
     <View style={styles.appContainer}>
@@ -70,26 +94,25 @@ export default function App() {
       <Text style={styles.encouragingText}>Write your thoughts, cherish your journey.</Text>
       <ScrollView contentContainerStyle={styles.notebookContainer}>
         <FlatList
-          data={[{ isAddButton: true }, ...journalEntries]}
-          renderItem={({ item }) => {
-            if (item.isAddButton) {
-              return (
-                <TouchableOpacity style={styles.addEntry} onPress={startAddJournalHandler}>
-                  <Text style={styles.plusText}>+</Text>
-                </TouchableOpacity>
-              );
-            }
-            return (
-              <View style={styles.journalEntry}>
-                <Text style={styles.entryDate}>{item.date}</Text>
-                <Text style={styles.entryText}>{item.text}</Text>
+          data={journalEntries}
+          renderItem={({ item }) => (
+            <View style={styles.journalEntry}>
+              <Text style={styles.entryDate}>{item.date}</Text>
+              <Text style={styles.entryText}>{item.text}</Text>
+              <View style={styles.buttonContainer}>
+                <Button title="Edit" onPress={() => startEditJournalHandler(item)} color="#606060" />
+                <Button title="Delete" onPress={() => deleteJournalHandler(item.id)} color="#B0B0B0" />
               </View>
-            );
-          }}
+            </View>
+          )}
           keyExtractor={(item, index) => item.id || index.toString()}
-          scrollEnabled={false}
         />
       </ScrollView>
+
+     
+      <TouchableOpacity style={styles.floatingAddButton} onPress={startAddJournalHandler}>
+        <Text style={styles.plusText}>+</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -126,7 +149,7 @@ const styles = StyleSheet.create({
   },
   notebookContainer: {
     flexGrow: 1,
-    paddingBottom: 20,
+    paddingBottom: 80,
     paddingHorizontal: 10,
   },
   journalEntry: {
@@ -153,14 +176,20 @@ const styles = StyleSheet.create({
     fontFamily: "serif",
     lineHeight: 24,
   },
-  addEntry: {
-    flex: 1,
-    margin: 10,
+  floatingAddButton: {
+    position: "absolute",
+    right: 20,
+    bottom: 20,
+    width: 60,
+    height: 60,
     backgroundColor: "#606060",
+    borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    height: 100,
-    borderRadius: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.2,
+    shadowOffset: { width: 0, height: 2 },
+    elevation: 4,
   },
   plusText: {
     fontSize: 36,
@@ -173,5 +202,10 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     resizeMode: "contain",
   },
-  
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 10,
+  },
 });
+
